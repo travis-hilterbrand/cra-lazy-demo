@@ -1,24 +1,25 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { Suspense } from 'react';
 import './App.css';
+import ErrorBoundary from './ErrorBoundary';
+
+const UsersList = React.lazy(() => import('./UsersList'));
+const Debug = React.lazy(() => import('./Debug'));
 
 function App() {
+  const [selected, setSelected] = React.useState('users');
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>
+        <button onClick={() => setSelected('users')}>UsersList</button>
+        <button onClick={() => setSelected('debug')}>Debug</button>
+      </div>
+      <hr />
+      <ErrorBoundary>
+        <Suspense fallback={<div>Loading...</div>}>
+          {selected === 'users' && <UsersList />}
+          {selected === 'debug' && <Debug />}
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }
